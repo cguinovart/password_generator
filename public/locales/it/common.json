@@ -1,0 +1,18 @@
+{
+  "passwordGenerator": "Generatore di Password",
+  "length": "Lunghezza: {length}",
+  "options": {
+    "uppercase": "Maiuscole",
+    "lowercase": "Minuscole",
+    "numbers": "Numeri",
+    "symbols": "Simboli"
+  },
+  "placeholder": "La tua password apparirà qui",
+  "copy": "Copia",
+  "generate": "Genera Password",
+  "notifications": {
+    "copied": "Password copiata!",
+    "error": "Errore durante la copia",
+    "selectOption": "Seleziona almeno un'opzione"
+  }
+}

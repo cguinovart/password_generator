@@ -1,0 +1,18 @@
+{
+  "passwordGenerator": "Passwort-Generator",
+  "length": "Länge: {length}",
+  "options": {
+    "uppercase": "Großbuchstaben",
+    "lowercase": "Kleinbuchstaben",
+    "numbers": "Zahlen",
+    "symbols": "Sonderzeichen"
+  },
+  "placeholder": "Ihr Passwort wird hier angezeigt",
+  "copy": "Kopieren",
+  "generate": "Passwort generieren",
+  "notifications": {
+    "copied": "Passwort kopiert!",
+    "error": "Fehler beim Kopieren",
+    "selectOption": "Wählen Sie mindestens eine Option"
+  }
+}

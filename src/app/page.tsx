@@ -1,103 +1,134 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [length, setLength] = useState(13)
+  const [includeUppercase, setIncludeUppercase] = useState(true)
+  const [includeLowercase, setIncludeLowercase] = useState(true)
+  const [includeNumbers, setIncludeNumbers] = useState(true)
+  const [includeSymbols, setIncludeSymbols] = useState(true)
+  const [password, setPassword] = useState('')
+  const [notification, setNotification] = useState('')
+  
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+  const showNotification = (message: string) => {
+    setNotification(message)
+    setTimeout(() => setNotification(''), 3000)
+  }
+
+  const generatePassword = () => {
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const lower = 'abcdefghijklmnopqrstuvwxyz'
+    const numbers = '0123456789'
+    const symbols = '!@#$%^&*()_+[]{}|;:,.<>?'
+
+    let chars = ''
+    if (includeUppercase) chars += upper
+    if (includeLowercase) chars += lower
+    if (includeNumbers) chars += numbers
+    if (includeSymbols) chars += symbols
+
+    if (!chars) return setPassword('Selecciona al menos una opción')
+
+    let pass = ''
+    for (let i = 0; i < length; i++) {
+      const random = Math.floor(Math.random() * chars.length)
+      pass += chars[random]
+    }
+    setPassword(pass)
+  }
+
+  const copyToClipboard = async () => {
+    if (!password) return
+
+    try {
+      await navigator.clipboard.writeText(password)
+      showNotification('¡Contraseña copiada!')
+    } catch (err) {
+      showNotification('Error al copiar')
+    }
+  }
+
+
+  useEffect(() => {
+    generatePassword()
+  }, [])
+
+  return (
+    <main className="min-h-screen bg-[#0B0033] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-[#370031] rounded-2xl shadow-lg p-6 space-y-6">
+        <h1 className="text-2xl font-bold text-center text-zinc-900 dark:text-white">Generador de Contraseñas</h1>
+        {/* Notificación */}
+        {notification && (
+          <div className="px-4 py-2 bg-[#EAF27C] text-black rounded-lg text-center animate-fade-in">
+            {notification}
+          </div>
+
+        )}
+
+        {/* Longitud */}
+        <div>
+          <label className="block text-sm font-medium mb-1 text-zinc-700 dark:text-zinc-200">
+            Longitud: {length}
+          </label>
+          <input
+            type="range"
+            min="4"
+            max="32"
+            value={length}
+            onChange={(e) => setLength(parseInt(e.target.value))}
+            className="w-full"
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* Opciones */}
+        <div className="grid grid-cols-2 gap-4">
+          <label className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
+            <input type="checkbox" checked={includeUppercase} onChange={(e) => setIncludeUppercase(e.target.checked)} />
+            <span>Mayúsculas</span>
+          </label>
+          <label className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
+            <input type="checkbox" checked={includeLowercase} onChange={(e) => setIncludeLowercase(e.target.checked)} />
+            <span>Minúsculas</span>
+          </label>
+          <label className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
+            <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} />
+            <span>Números</span>
+          </label>
+          <label className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
+            <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} />
+            <span>Símbolos</span>
+          </label>
+        </div>
+
+        {/* Resultado */}
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            readOnly
+            value={password}
+            placeholder="Tu contraseña aparecerá aquí"
+            className="flex-1 px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 text-sm bg-[#832232] text-zinc-900 dark:text-white"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <button
+            onClick={copyToClipboard}
+            className="px-3 py-2 bg-[#EAF27C] text-sm rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-500 text-black"
+          >
+            Copiar
+          </button>
+        </div>
+
+        {/* Botón generar */}
+        <button
+          onClick={generatePassword}
+          className="bg-[#CE8964] hover:bg-[#8C4D2C] w-full py-3 text-black text-pretty rounded-xl  transition"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          <b>Generar Contraseña</b>
+        </button>
+      </div>
+    </main>
+  )
 }
